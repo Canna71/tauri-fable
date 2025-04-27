@@ -1,0 +1,27 @@
+{
+  "name": "tauri-fable",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.9.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=8"
+  },
+  "scripts": {
+    "dev": "dotnet fable watch ./src -e .jsx --sourceMaps --configuration Debug --run vite --mode development",
+    "build": "dotnet fable ./src -e .jsx --noCache --configuration Release --define FABLE_COMPILER --run vite build --mode production",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.5.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "vite": "^6.3.3"
+  }
+}
