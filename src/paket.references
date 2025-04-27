@@ -1,5 +1,5 @@
 group Src
     FSharp.Core
     Fable.Core
-    Fable.Promise
-    Feliz
+    Fable.React
+    FreeAct

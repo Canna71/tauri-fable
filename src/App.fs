@@ -1,8 +1,8 @@
 module App
 
 open Fable.Core
+open Fable.React
 open Fable.Core.JsInterop
-open Feliz
 
 module Import =
 
@@ -13,26 +13,28 @@ module Import =
 
 [<JSX.Component>]
 let AppComponent () : JSX.Element =
-    let greetMsg, setGreetMsg = React.useState ""
-    let name, setName = React.useState ""
+    let greetState = Hooks.useState ""
+    let greetMsg = greetState.current
+    let nameState = Hooks.useState ""
+    let setName : string->unit = nameState.update
 
     /// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    let greet () : unit =
-        promise {
-            let! (greetMsg : string) =
-                Import.Tauri.invoke (
-                    "greet",
-                    createObj [
-                        "name" ==> name
-                    ]
-                )
-            setGreetMsg greetMsg
-        }
-        |> Promise.start
+    // let greet () : unit =
+    //     promise {
+    //         let! (greetMsg : string) =
+    //             Import.Tauri.invoke (
+    //                 "greet",
+    //                 createObj [
+    //                     "name" ==> name
+    //                 ]
+    //             )
+    //         setGreetMsg greetMsg
+    //     }
+    //     |> Promise.start
 
     let onSubmit (e : Browser.Types.Event) : unit =
         e.preventDefault()
-        greet()
+        // greet()
 
     let onChange (e : Browser.Types.Event) : unit =
         let value : string =

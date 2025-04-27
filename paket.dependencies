@@ -7,6 +7,4 @@ group Src
     storage: none
 
     nuget FSharp.Core == 8.0.200
-    nuget Fable.Core ~> 4
-    nuget Fable.Promise == 3.2.0
-    nuget Feliz >= 2.7.0
+    nuget FreeAct ~> 0.3.1
