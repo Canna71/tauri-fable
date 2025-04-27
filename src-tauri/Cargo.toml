@@ -2,7 +2,7 @@
 name = "tauri-fable"
 version = "0.1.0"
 description = "Tauri + Fable Template"
-authors = ["Russell Dillin", "Gabriele Cannata@"]
+authors = ["Russell Dillin", "Gabriele Cannata"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
