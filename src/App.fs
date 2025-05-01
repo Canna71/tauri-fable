@@ -4,11 +4,54 @@ open Fable.Core
 open Fable.React
 open Fable.Core.JsInterop
 open FreeAct
+open FreeFrame
 // open reactLogo from "./assets/react.svg";
 // open fableLogo from "./assets/fable.svg";
 
 let [<Import("default", from="./assets/react.svg")>] reactLogo: string = jsNative
 let [<Import("default", from="./assets/fable.svg")>] fableLogo: string = jsNative
+
+type AppState = {
+    Name: string
+    Message: string
+}
+
+// Initialize the app database with initial state
+let appDb = AppDb<AppState>({
+    Name = ""
+    Message = ""
+})
+
+let setNameEvent = EventId.named<string> "set-name"
+
+let setNameEventHandler = registerEventHandler setNameEvent (fun name state ->
+    { state with Name = name }
+)
+
+let nameSubscription = createView appDb (fun state ->
+    state.Name
+)
+let messageSubscription = createView appDb (fun state ->
+    state.Message
+)
+
+let setMessageEvent = EventId.named<string> "set-message"
+
+let setMessageEventHandler = registerEventHandler setMessageEvent (fun message state ->
+    { state with Message = message }
+)
+
+let fetchMessageEffect = EffectId.named<string, unit> "fetch-message"
+
+Effects.registerHandler fetchMessageEffect (fun name ->
+    async {
+        // Simulate a network request
+        do! Async.Sleep 1000
+        let message = sprintf "Hello, %s!" name
+        dispatch appDb setMessageEvent message
+        // return message
+    }
+)
 
 module Import =
 
@@ -19,36 +62,34 @@ module Import =
 
 [<JSX.Component>]
 let AppComponent () : ReactElement =
-    let greetState = Hooks.useState ""
-    let greetMsg = greetState.current
-    let setGreetMsg : string->unit = greetState.update
-    let nameState = Hooks.useState ""
-    let setName : string->unit = nameState.update
-    let name = nameState.current
+    let name = useView nameSubscription
+    let greetMsg = useView messageSubscription
 
     /// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    let greet () : unit =
-        async {
-            let! (greetMsg : string) =
-                Import.Tauri.invoke (
-                    "greet",
-                    createObj [
-                        "name" ==> name
-                    ]
-                ) |> Async.AwaitPromise
-            setGreetMsg greetMsg
-        }
-        |> Async.StartImmediate
+    // let greet () : unit =
+    //     async {
+    //         let! (greetMsg : string) =
+    //             Import.Tauri.invoke (
+    //                 "greet",
+    //                 createObj [
+    //                     "name" ==> name
+    //                 ]
+    //             ) |> Async.AwaitPromise
+    //         setGreetMsg greetMsg
+    //     }
+    //     |> Async.StartImmediate
 
 
     let onSubmit' (e : Browser.Types.Event) : unit =
         e.preventDefault()
-        greet()
+        Effects.runEffect fetchMessageEffect name
+        |> ignore
+        // greet()
 
     let onChange' (e : Browser.Types.Event) : unit =
         let value : string =
             !!e.target?value
-        setName value
+        dispatch appDb setNameEvent value
 
     div {
         className "container"
@@ -95,40 +136,4 @@ let AppComponent () : ReactElement =
         p { greetMsg }
     }
 
-    // JSX.jsx $"""
 
-    // <div className="container">
-    //   <h1>Welcome to Tauri!</h1>
-
-    //   <div className="row">
-    //     <a href="https://vitejs.dev" target="_blank">
-    //       <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-    //     </a>
-    //     <a href="https://tauri.app" target="_blank">
-    //       <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-    //     </a>
-    //     <a href="https://reactjs.org" target="_blank">
-    //       <img src={{reactLogo}} className="logo react" alt="React logo" />
-    //     </a>
-    //     <a href="https://fable.io" target="_blank">
-    //       <img src={{fableLogo}} className="logo react" alt="Fable logo" />
-    //     </a>
-    //   </div>
-
-    //   <p>Click on the Tauri, Vite, React, and Fable logos to learn more.</p>
-
-    //   <form
-    //     className="row"
-    //     onSubmit={onSubmit}
-    //   >
-    //     <input
-    //       id="greet-input"
-    //       onChange={onChange}
-    //       placeholder="Enter a name..."
-    //     />
-    //     <button type="submit">Greet</button>
-    //   </form>
-
-    //   <p>{greetMsg}</p>
-    // </div>
-    // """
