@@ -1,5 +1,5 @@
 module Util
-
+open Fable.Core
 // open Fable.Core
 
 // let inline toJsx (el : ReactElement) : JSX.Element = unbox el
@@ -17,3 +17,15 @@ module Util
 //         | _, false -> None
 //         | c, true -> Some c)
 //     |> String.concat " "
+
+
+
+[<Erase>]
+type Tauri =
+    [<Import("invoke", "@tauri-apps/api/core")>]
+    static member private invokePromise(cmd : string, ?invokeParams : obj) : JS.Promise<_> = jsNative
+
+    static member invoke(cmd : string, ?invokeParams : obj) =
+
+        Tauri.invokePromise(cmd, invokeParams)
+        |> Async.AwaitPromise

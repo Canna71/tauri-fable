@@ -5,17 +5,13 @@ open Fable.React
 open Fable.Core.JsInterop
 open FreeAct
 open FreeFrame
+open Util
 // open reactLogo from "./assets/react.svg";
 // open fableLogo from "./assets/fable.svg";
 
 let [<Import("default", from="./assets/react.svg")>] reactLogo: string = jsNative
 let [<Import("default", from="./assets/fable.svg")>] fableLogo: string = jsNative
-module Import =
 
-    [<Erase>]
-    type Tauri =
-        [<Import("invoke", "@tauri-apps/api/core")>]
-        static member invoke(cmd : string, ?invokeParams : obj) : JS.Promise<_> = jsNative
 
 type AppState = {
     Name: string
@@ -51,14 +47,13 @@ let fetchMessageEffect = EffectId.named<string, unit> "fetch-message"
 
 Effects.registerHandler fetchMessageEffect (fun name ->
     async {
-        // Simulate a network request
         let! (greetMsg : string) =
-            Import.Tauri.invoke (
+            Tauri.invoke(
                 "greet",
                 createObj [
                     "name" ==> name
-                ]
-            ) |> Async.AwaitPromise
+                ])
+
         dispatch appDb setMessageEvent greetMsg
         // return message
     }
