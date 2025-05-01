@@ -9,8 +9,12 @@ open Fable.Core.JsInterop
 
 importSideEffects "./styles.css"
 
-ReactDomClient.createRoot(document.getElementById("root")).render(
 
-        App.AppComponent() |> unbox
-
-)
+// Initialize the application
+let container = Browser.Dom.document.getElementById "root"
+if isNull container then
+    Browser.Dom.console.error "No element with id 'root' found."
+else
+    let root = ReactDomClient.createRoot(container)
+    console.log "Rendering App..."
+    root.render(App.AppComponent() |> unbox)

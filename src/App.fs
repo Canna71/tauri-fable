@@ -15,26 +15,29 @@ module Import =
 let AppComponent () : JSX.Element =
     let greetState = Hooks.useState ""
     let greetMsg = greetState.current
+    let setGreetMsg : string->unit = greetState.update
     let nameState = Hooks.useState ""
     let setName : string->unit = nameState.update
+    let name = nameState.current
 
     /// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    // let greet () : unit =
-    //     promise {
-    //         let! (greetMsg : string) =
-    //             Import.Tauri.invoke (
-    //                 "greet",
-    //                 createObj [
-    //                     "name" ==> name
-    //                 ]
-    //             )
-    //         setGreetMsg greetMsg
-    //     }
-    //     |> Promise.start
+    let greet () : unit =
+        async {
+            let! (greetMsg : string) =
+                Import.Tauri.invoke (
+                    "greet",
+                    createObj [
+                        "name" ==> name
+                    ]
+                ) |> Async.AwaitPromise
+            setGreetMsg greetMsg
+        }
+        |> Async.StartImmediate
+
 
     let onSubmit (e : Browser.Types.Event) : unit =
         e.preventDefault()
-        // greet()
+        greet()
 
     let onChange (e : Browser.Types.Event) : unit =
         let value : string =
