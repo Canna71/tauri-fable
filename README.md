@@ -4,8 +4,11 @@
 ![Tauri Fable](./img/tauri-fable-light.png#gh-light-mode-only)
 
 This template should help get you started developing with Tauri and Fable (React) in Vite.
+This templates uses [FreeAct](https://github.com/Canna71/FreeAct) as the UI and State management library.
+
 
 _This template is a simple, minimalistic port of the `pnpm create tauri-app` React template for Fable._
+
 
 ## Recommended IDE Setup
 
