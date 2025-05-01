@@ -1,4 +1,4 @@
-# Tauri + Fable (React)
+# Tauri + Fable (FreeAct)
 
 ![Tauri Fable](./img/tauri-fable-dark.png#gh-dark-mode-only)
 ![Tauri Fable](./img/tauri-fable-light.png#gh-light-mode-only)
