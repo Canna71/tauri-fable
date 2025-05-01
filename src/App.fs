@@ -10,6 +10,12 @@ open FreeFrame
 
 let [<Import("default", from="./assets/react.svg")>] reactLogo: string = jsNative
 let [<Import("default", from="./assets/fable.svg")>] fableLogo: string = jsNative
+module Import =
+
+    [<Erase>]
+    type Tauri =
+        [<Import("invoke", "@tauri-apps/api/core")>]
+        static member invoke(cmd : string, ?invokeParams : obj) : JS.Promise<_> = jsNative
 
 type AppState = {
     Name: string
@@ -46,19 +52,18 @@ let fetchMessageEffect = EffectId.named<string, unit> "fetch-message"
 Effects.registerHandler fetchMessageEffect (fun name ->
     async {
         // Simulate a network request
-        do! Async.Sleep 1000
-        let message = sprintf "Hello, %s!" name
-        dispatch appDb setMessageEvent message
+        let! (greetMsg : string) =
+            Import.Tauri.invoke (
+                "greet",
+                createObj [
+                    "name" ==> name
+                ]
+            ) |> Async.AwaitPromise
+        dispatch appDb setMessageEvent greetMsg
         // return message
     }
 )
 
-module Import =
-
-    [<Erase>]
-    type Tauri =
-        [<Import("invoke", "@tauri-apps/api/core")>]
-        static member invoke(cmd : string, ?invokeParams : obj) : JS.Promise<_> = jsNative
 
 [<JSX.Component>]
 let AppComponent () : ReactElement =
