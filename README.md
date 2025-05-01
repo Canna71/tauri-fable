@@ -28,9 +28,6 @@ _This template is a simple, minimalistic port of the `pnpm create tauri-app` Rea
 * Install .NET dependencies:
     + `dotnet tool restore`
     + `dotnet paket install`
-* Install JavaScript dependencies:
-    + `corepack enable`
-    + `corepack use pnpm@latest`
-    + `pnpm install`
+* Install pnpm
 * Build: `dotnet build src/Src.fsproj`
 * Dev: `pnpm tauri dev`
